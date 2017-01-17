@@ -3,43 +3,50 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "PhysicsEngine/ConstraintInstance.h"
 #include "InteractableButton.generated.h"
 
 UCLASS()
 class VRINTERACTABLES_API AInteractableButton : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	AInteractableButton();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
 	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Mesh")
 		class USceneComponent* Scene;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess), Category = "Mesh")
 		class UStaticMeshComponent* PushableButtonMesh;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UStaticMeshComponent* ButtonBaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		class UPhysicsConstraintComponent* ButtonSpringConstraint;
+		FConstraintInstance ButtonConstraint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ButtonTriggerDistance;
+		float ButtonTriggerDistance = -7.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ButtonPreferredX = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ButtonMinimumX = -12.5f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		bool bIsButtonPushed;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Button")
-		void OnButtonPushed();
+		void OnButtonPressed();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Button")
 		void OnButtonReleased();

@@ -25,22 +25,43 @@ AInteractableButton::AInteractableButton()
 	PushableButtonMesh->GetBodyInstance()->bLockYRotation = true;
 	PushableButtonMesh->GetBodyInstance()->bLockZRotation = true;
 	PushableButtonMesh->GetBodyInstance()->SetDOFLock(EDOFMode::SixDOF);
-
-	ButtonSpringConstraint = CreateDefaultSubobject<UPhysicsConstraintComponent>(TEXT("ButtonSpringConstraint"));
-	
 }
 
 // Called when the game starts or when spawned
 void AInteractableButton::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	ButtonConstraint.SetLinearPositionTarget(PushableButtonMesh->RelativeLocation);
+	ButtonConstraint.SetLinearPositionDrive(true, true, true);
 }
 
 // Called every frame
 void AInteractableButton::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
-
+	UE_LOG(LogTemp, Warning, TEXT("BUTTON LOCATION: %s"), *PushableButtonMesh->RelativeLocation.ToString());
+	if (PushableButtonMesh->RelativeLocation.X < ButtonTriggerDistance)
+	{
+		if(bIsButtonPushed)
+		{
+			//
+		}
+		else
+		{
+			bIsButtonPushed = true;
+			OnButtonPressed();
+		}
+	}
+	else
+	{
+		if(bIsButtonPushed)
+		{
+			bIsButtonPushed = false;
+			OnButtonReleased();
+		}
+		else
+		{
+			
+		}
+	}
 }
-
