@@ -30,17 +30,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UStaticMeshComponent* ButtonBaseMesh;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		FConstraintInstance ButtonConstraint;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ButtonTriggerDistance = -7.5f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ButtonPreferredX = 0.f;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ButtonMinimumX = -12.5f;
+		float ButtonTriggerDistance = 5.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		bool bIsButtonPushed;

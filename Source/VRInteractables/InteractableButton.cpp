@@ -2,12 +2,13 @@
 
 #include "VRInteractables.h"
 #include "InteractableButton.h"
+#include "PhysicsEngine/PhysicsConstraintComponent.h"
 
 
 // Sets default values
 AInteractableButton::AInteractableButton()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	Scene = CreateDefaultSubobject<USceneComponent>(TEXT("Scene"));
@@ -18,31 +19,28 @@ AInteractableButton::AInteractableButton()
 
 	PushableButtonMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PushableButtonMesh"));
 	PushableButtonMesh->SetupAttachment(RootComponent);
-	PushableButtonMesh->SetSimulatePhysics(true);
-	PushableButtonMesh->GetBodyInstance()->bLockYTranslation = true;
-	PushableButtonMesh->GetBodyInstance()->bLockZTranslation = true;
-	PushableButtonMesh->GetBodyInstance()->bLockXRotation = true;
-	PushableButtonMesh->GetBodyInstance()->bLockYRotation = true;
-	PushableButtonMesh->GetBodyInstance()->bLockZRotation = true;
-	PushableButtonMesh->GetBodyInstance()->SetDOFLock(EDOFMode::SixDOF);
 }
 
 // Called when the game starts or when spawned
 void AInteractableButton::BeginPlay()
 {
 	Super::BeginPlay();
-	ButtonConstraint.SetLinearPositionTarget(PushableButtonMesh->RelativeLocation);
-	ButtonConstraint.SetLinearPositionDrive(true, true, true);
+
+	PushableButtonMesh->SetSimulatePhysics(true);
+	PushableButtonMesh->SetEnableGravity(false);
 }
 
 // Called every frame
-void AInteractableButton::Tick( float DeltaTime )
+void AInteractableButton::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
-	UE_LOG(LogTemp, Warning, TEXT("BUTTON LOCATION: %s"), *PushableButtonMesh->RelativeLocation.ToString());
-	if (PushableButtonMesh->RelativeLocation.X < ButtonTriggerDistance)
+	Super::Tick(DeltaTime);
+
+	//PushableButtonMesh->SetWorldRotation(ButtonBaseMesh->GetComponentRotation());
+
+	UE_LOG(LogTemp, Warning, TEXT("FVector Distance is %f"), FVector::Dist(PushableButtonMesh->GetComponentLocation(), ButtonBaseMesh->GetComponentLocation()));
+	if (FVector::Dist(PushableButtonMesh->GetComponentLocation(), ButtonBaseMesh->GetComponentLocation()) < ButtonTriggerDistance)
 	{
-		if(bIsButtonPushed)
+		if (bIsButtonPushed)
 		{
 			//
 		}
@@ -54,14 +52,14 @@ void AInteractableButton::Tick( float DeltaTime )
 	}
 	else
 	{
-		if(bIsButtonPushed)
+		if (bIsButtonPushed)
 		{
 			bIsButtonPushed = false;
 			OnButtonReleased();
 		}
 		else
 		{
-			
+
 		}
 	}
 }
